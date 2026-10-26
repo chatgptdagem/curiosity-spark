@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Curiosity Spark - Daily Deep Dive</title>
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --accent-history: #b45309;
+            --accent-science: #0369a1;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+        }
+
+        header p {
+            margin: 0.5rem 0 0 0;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        main {
+            max-width: 650px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .filter-nav {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn.active {
+            background: var(--text-main);
+            color: white;
+            border-color: var(--text-main);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .badge.history { background: #fef3c7; color: var(--accent-history); }
+        .badge.science { background: #e0f2fe; color: var(--accent-science); }
+
+        .timer-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f1f5f9;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 0.85rem;
+        }
+
+        .timer-btn {
+            background: var(--text-main);
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .section-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .hook-box {
+            font-style: italic;
+            font-size: 1.1rem;
+            color: var(--text-main);
+            border-left: 3px solid var(--border-color);
+            padding-left: 1rem;
+            margin: 1rem 0;
+        }
+
+        ul.facts-list {
+            margin: 0;
+            padding-left: 1.2rem;
+        }
+
+        ul.facts-list li {
+            margin-bottom: 0.75rem;
+        }
+
+        .quiz-box {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-top: 2rem;
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .quiz-opt {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 0.75rem;
+            border-radius: 6px;
+            text-align: left;
+            cursor: pointer;
+            width: 100%;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+
+        .quiz-opt:hover {
+            background: #f1f5f9;
+        }
+
+        .quiz-opt.correct {
+            background: #dcfce7;
+            border-color: #22c55e;
+            color: #14532d;
+        }
+
+        .quiz-opt.wrong {
+            background: #fee2e2;
+            border-color: #ef4444;
+            color: #7f1d1d;
+        }
+
+        .feedback {
+            margin-top: 0.75rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>The Curiosity Spark</h1>
+        <p>A daily, 5-minute dive into anomalies & scientific quirks</p>
+    </header>
+
+    <main>
+        <div class="filter-nav">
+            <button class="filter-btn active" onclick="loadEntry('dancing_plague')">The Dancing Plague (History)</button>
+            <button class="filter-btn" onclick="loadEntry('sonoluminescence')">Sonoluminescence (Science)</button>
+        </div>
+
+        <div id="content-card" class="card">
+            <!-- Dynamic Content Injected Here -->
+        </div>
+    </main>
+
+    <script>
+        const contentData = {
+            dancing_plague: {
+                title: "The Dancing Plague of 1518",
+                type: "history",
+                label: "Historical Anomaly",
+                hook: "In July 1518, a woman stepped into a street in Strasbourg and began to dance. She didn't stop for days. Within a month, hundreds joined her—dancing until they collapsed from exhaustion or heart attacks.",
+                facts: [
+                    "<strong>No music was playing:</strong> Witnesses noted the dancers were not celebrating; many were weeping and screaming in agony, seemingly unable to control their movements.",
+                    "<strong>The medical fix failed:</strong> Authorities believed the afflicted simply needed to dance it out. They built a wooden stage and hired musicians, which only caused the hysteria to spread faster.",
+                    "<strong>The modern consensus:</strong> While modern theories point to mass psychogenic illness triggered by severe famine, some historians still suspect ergot poisoning (a mind-altering fungus found on damp rye crop)."
+                ],
+                takeaway: "Mass hysteria can physically manifest under extreme environmental and psychological pressure, turning a mental break into a community contagious event.",
+                quiz: {
+                    question: "What was the local authority's initial strategy to cure the dancing plague?",
+                    options: [
+                        { text: "Enforce a city-wide quarantine", correct: false },
+                        { text: "Build a stage and hire musicians to let them dance it out", correct: true },
+                        { text: "Ban all dancing and music in public places", correct: false }
+                    ],
+                    explanation: "Bizarrely, they thought encouraging them to keep dancing on a custom-built stage would cure them!"
+                }
+            },
+            sonoluminescence: {
+                title: "Sonoluminescence: Sound into Light",
+                type: "science",
+                label: "Scientific Quirk",
+                hook: "If you blast a tiny gas bubble trapped in a liquid with intense, high-frequency sound waves, the bubble will violently collapse—and emit a sudden, mysterious flash of light.",
+                facts: [
+                    "<strong>Extreme temperatures:</strong> The interior of the collapsing bubble reaches temperatures estimated over 10,000 Kelvin. That is roughly twice as hot as the surface of the sun.",
+                    "<strong>Picosecond flashes:</strong> The bursts of light are incredibly brief, lasting only between tens to hundreds of picoseconds (one picosecond is a trillionth of a second).",
+                    "<strong>The unexplained mystery:</strong> While scientists know the bubble collapse compresses the gas to generate heat, the exact atomic physics behind the light emission remains a highly debated topic."
+                ],
+                takeaway: "Sound energy can compress matter so intensely that it generates temperatures hotter than the sun, showing how much violent energy hides in simple pressure waves.",
+                quiz: {
+                    question: "How hot can the inside of a collapsing sonoluminescent bubble get?",
+                    options: [
+                        { text: "Roughly the temperature of boiling water", correct: false },
+                        { text: "About as hot as the Earth's core", correct: false },
+                        { text: "Over 10,000 Kelvin (twice the surface of the sun)", correct: true }
+                    ],
+                    explanation: "The compression is so violent it creates stellar-level temperatures in a microscopic bubble."
+                }
+            }
+        };
+
+        let timerInterval;
+        let timeLeft = 300; // 5 minutes
+        let activeKey = 'dancing_plague';
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            const display = document.getElementById('timer-display');
+            const btn = document.getElementById('timer-btn');
+            
+            if (btn.innerText === "Start Timer" || btn.innerText === "Resume") {
+                btn.innerText = "Pause";
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    let mins = Math.floor(timeLeft / 60);
+                    let secs = timeLeft % 60;
+                    display.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        display.innerText = "Time up! Reading complete.";
+                        btn.style.display = 'none';
+                    }
+                }, 1000);
+            } else {
+                btn.innerText = "Resume";
+                clearInterval(timerInterval);
+            }
+        }
+
+        function handleQuizAnswer(btn, isCorrect) {
+            const optionsBox = btn.parentElement;
+            const allButtons = optionsBox.querySelectorAll('.quiz-opt');
+            
+            allButtons.forEach(b => b.disabled = true);
+            
+            if (isCorrect) {
+                btn.classList.add('correct');
+            } else {
+                btn.classList.add('wrong');
+                allButtons.forEach(b => {
+                    if (b.getAttribute('data-correct') === "true") b.classList.add('correct');
+                });
+            }
+
+            const feedback = document.getElementById('quiz-feedback');
+            feedback.innerText = contentData[activeKey].quiz.explanation;
+            feedback.style.color = isCorrect ? '#16a34a' : '#dc2626';
+        }
+
+        function loadEntry(key) {
+            activeKey = key;
+            
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.getAttribute('onclick').includes(key)) btn.classList.add('active');
+            });
+
+            clearInterval(timerInterval);
+            timeLeft = 300;
+
+            const data = contentData[key];
+            const card = document.getElementById('content-card');
+
+            let factsHTML = data.facts.map(f => `<li>${f}</li>`).join('');
+            let optionsHTML = data.quiz.options.map((opt, index) => `
+                <button class="quiz-opt" data-correct="${opt.correct}" onclick="handleQuizAnswer(this, ${opt.correct})">
+                    ${opt.text}
+                </button>
+            `).join('');
+
+            card.innerHTML = `
+                <span class="badge ${data.type}">${data.label}</span>
+                <h2 style="margin: 0 0 1rem 0; font-size: 1.5rem;">${data.title}</h2>
+                
+                <div class="timer-container">
+                    <span>⏱️ 5-Min Reading Focus: <strong id="timer-display">5:00</strong></span>
+                    <button id="timer-btn" class="timer-btn" onclick="startTimer()">Start Timer</button>
+                </div>
+
+                <div class="section-title">The Hook</div>
+                <div class="hook-box">${data.hook}</div>
+
+                <div class="section-title">Core Intel</div>
+                <ul class="facts-list">${factsHTML}</ul>
+
+                <div class="section-title">The Dinner Table Takeaway</div>
+                <p style="margin: 0.5rem 0; font-weight: 500;">${data.takeaway}</p>
+
+                <div class="quiz-box">
+                    <h3 style="margin: 0 0 0.5rem 0; font-size: 1rem;">🧠 Quick Knowledge Check</h3>
+                    <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted);">${data.quiz.question}</p>
+                    <div class="quiz-options">${optionsHTML}</div>
+                    <div id="quiz-feedback" class="feedback"></div>
+                </div>
+            `;
+        }
+
+        // Initial Load
+        loadEntry('dancing_plague');
+    </script>
+</body>
+</html>
